@@ -1,0 +1,206 @@
+:root {
+    --gameboy-dark-blue: #012d5a; /* Dark Blue for Christmas Night */
+    --pink-color: #e11764; /* Pink from the logo */
+    --grid-line-color: rgba(255, 255, 255, 0.05); /* Very faint white for grid */
+/* Colors for the Game Boy Frame */
+    --frame-color: #012d5a; 
+    --screen-color: #012d5a; /* Darker blue for the screen area */
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--gameboy-dark-blue);
+    color: white;
+    font-family: 'Courier New', monospace; /* Retro font style */
+    overflow-x: hidden;
+    min-height: 150vh; /* Make it scrollable for the effect */
+}
+
+/* --- Gameboy Grid Effect --- */
+#game-screen {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    padding-top: 120px; /* Space for header */
+    box-sizing: border-box;
+    /* Create a repeating background pattern for the grid */
+    background-image: 
+        linear-gradient(to right, var(--grid-line-color) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-line-color) 1px, transparent 1px);
+    background-size: 10px 10px; /* Adjust pixel size here */
+    display: flex;
+    justify-content: center;
+}
+
+/* --- Header & Logo --- */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 5px 15px;
+    z-index: 1000;
+    box-sizing: border-box;
+}
+
+.logo {
+    width: 120px;
+    height: auto;
+    margin-right:50px;
+}
+
+.game-title {
+    font-size: 1em;
+    color: white;
+    text-shadow: 2px 2px var(--pink-color); /* Retro text effect */
+}
+
+/* --- Typewriter Effect --- */
+#typewriter-container {
+    position: fixed;
+    top: 60px; /* Position below the header */
+    width: 100%;
+    text-align: center;
+    font-size: 1.5em;
+    color: var(--pink-color);
+    z-index: 999;
+}
+
+#typewriter-text {
+    /*display: inline-block;*/
+    overflow: hidden; /* Ensures text is only visible as it types */
+    white-space: nowrap; /* Prevents text from wrapping */
+    border-right: none; /* The "typing" cursor */
+    /*animation: none; /* Initial state, JS handles visibility */
+}
+
+.cursor {
+    border-right: .15em solid white; /* The blinking cursor effect */
+    opacity: 0;
+}
+/* --- Game Boy Frame Styles --- */
+.game-frame-container {
+    padding-top: 50px; /* Push the frame down slightly */
+}
+
+.gameboy-frame {
+    width: 450px;
+    height: 400px;
+    background-color: var(--frame-color);
+    border: 10px solid #012d5a;
+    border-radius: 20px;
+    box-shadow: 
+        inset 0 0 15px rgba(0, 17, 56, 0.201), 
+        0 10px 20px rgb(0, 37, 79);
+    position: relative;
+}
+
+.gameboy-screen {
+    width: 90%;
+    height: 80%;
+    margin: 5% auto;
+    background-color: var(--screen-color);
+    border: 5px solid #030051;
+    box-shadow: inset 0 0 10px rgba(0, 23, 94, 0.9);
+    position: relative;
+    overflow: hidden; /* Important to keep the piling inside */
+}
+
+/* --- Mouse Trail Effect --- */
+.mouse-trail-text {
+    position: fixed;
+    top: 0; /* Start off-screen */
+    left: 0;
+    font-size: 10px;
+    color: white;
+    pointer-events: none; /* Important: allows clicking through the text */
+    z-index: 10000;
+    user-select: none;
+    transition: transform 0.05s linear ease-out; /* Smooth follow effect */
+}
+
+/* --- Interactive Piling Area (Foundation) --- */
+#piling-area {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    /*transform: translateX(-50%);*/
+    width: 100%; /* Define an area */
+    height: 100%; /* Allow it to be tall */
+    display: flex;
+    flex-direction: column-reverse; /* Items will pile from the bottom */
+    align-items: center;
+}
+
+.snow-piece {
+    position: absolute; /* Allows for precise layering and movement */
+    width: 20px; /* <--- Use 20px here for consistency */
+    height: 20px; /* <--- Give it a height so the background image has space */
+    opacity: 0; /* Hidden by default, JS adds them */
+    transition: opacity 0.5s ease, transform 0.3s ease;
+    /* Use the cloud image */
+    background-image: url('snow_cloud.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    /* Fallback if image fails, to show position */
+    background-color: transparent;
+}
+
+.snow-cloud-shape {
+    /* Image for the cloud shape */
+    width: 20px;
+}
+
+/* Style for the 'n' logo state (will use this to swap colors/transforms) */
+.snow-piece.logo-shape {
+    /* For demonstration, changes the color and shape */
+    background-color: transparent !important;
+    border-radius: 5px; 
+    background-image: url('snow_cloud_n.png'); /* If you have the 'n' shaped cloud image */
+    background-size: contain;
+}
+
+/* Ensure the original cloud state uses the cloud image */
+.snow-piece.cloud-original {
+    background-image: url('snow_cloud.png');
+    background-color: transparent !important;
+    border-radius: 0;
+}
+
+/* --- Background Digit Snowing Effect (Simplified via CSS Animation) --- */
+/* For a true "digit" effect, a JS canvas/particle library is better. 
+   This is a simplified CSS version that shows the concept. */
+.snow-digit {
+    position: absolute;
+    top: -5%;
+    color: white;
+    font-size: 10px;
+    opacity: 0.8;
+    user-select: none;
+    animation: snowing linear infinite;
+    z-index: 1; /* Below the main interactive elements */
+}
+
+@keyframes snowing {
+    0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateY(200vh) translateX(50px);
+        opacity: 0.2;
+    }
+}
+.mouse-trail-text {
+    position: fixed;
+    top: 0;
+    left: 0;
+    font-size: 10px;
+    color: white;
+    pointer-events: none;
+    z-index: 10000;
+    user-select: none;
+}
