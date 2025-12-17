@@ -37,8 +37,10 @@ window.addEventListener('load', () => {
 const mouseTrail = document.getElementById('mouse-trail');
 
 document.addEventListener('mousemove', (e) => {
-    // Places the text precisely at the cursor coordinates
-    mouseTrail.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+    // OLD: mouseTrail.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+    
+    // NEW: Add +25px to X and Y to push text away from the tree cursor
+    mouseTrail.style.transform = `translate(${e.clientX + 25}px, ${e.clientY + 25}px)`;
 });
 // -----------------------------------------------------------------
 // 3. Background Digit Snowing Effect (Dynamic Particle Spawner)

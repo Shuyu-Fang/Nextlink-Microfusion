@@ -15,6 +15,7 @@ body {
     font-family: 'Courier New', monospace; /* Retro font style */
     overflow-x: hidden;
     min-height: 150vh; /* Make it scrollable for the effect */
+    cursor: url('cursor.png'), auto;
 }
 
 /* --- Gameboy Grid Effect --- */
@@ -203,4 +204,52 @@ header {
     pointer-events: none;
     z-index: 10000;
     user-select: none;
+}
+/* --- Santa Footer --- */
+#santa-wrapper {
+    position: fixed;
+    bottom: 20px; /* Distance from bottom */
+    right: 20px;  /* Distance from right */
+    z-index: 2000; /* Ensure he sits on top of the grid/game */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none; /* Let clicks pass through if he covers buttons */
+}
+
+.santa-graphic {
+    width: 120px; /* Adjust based on your image size */
+    height: auto;
+    filter: drop-shadow(2px 2px 0 var(--gameboy-dark-blue));
+    animation: santaBounce 3s infinite ease-in-out;
+}
+
+.santa-speech {
+    background: white;
+    color: var(--gameboy-dark-blue); /* Uses your existing dark blue */
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-bottom: 10px; /* Space between bubble and Santa head */
+    position: relative;
+    font-weight: bold;
+    font-size: 14px;
+    box-shadow: 4px 4px 0 var(--pink-color); /* Matches your logo pink shadow */
+    white-space: nowrap;
+}
+
+/* The little triangle pointing down from the speech bubble */
+.santa-speech::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 8px 8px 0;
+    border-style: solid;
+    border-color: white transparent transparent transparent;
+}
+
+@keyframes santaBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
 }
