@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nextlink Christmas Tree Making</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Mountains+of+Christmas:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --card-size: 70px; /* Adjust size for responsiveness */
+            --bg-color: #0b1026;
+            --gold: #FFD700;
+        }
+
+        /* --- 1. General Setup & Cursor --- */
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #020111 0%, #193c6d 100%);
+            height: 100vh;
+            overflow: hidden; /* Prevent scrolling */
+            font-family: 'Mountains of Christmas', cursive;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* Custom Cursor */
+            cursor: url('cursor.png'), auto; 
+            user-select: none;
+        }
+
+        /* --- 2. Background Elements (Snow, Village) --- */
+        #snow-container {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(105vh); }
+        }
+
+        /* Simple CSS Village Silhouette at bottom */
+        .village-layer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 150px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" preserveAspectRatio="none"><path d="M0,300 L0,250 L50,200 L100,250 L150,180 L200,250 L250,220 L300,300 Z" fill="%23050a1f" opacity="0.5"/></svg>');
+            background-size: cover;
+            z-index: 2;
+        }
+
+        /* --- 3. UI Header --- */
+        #header {
+            z-index: 10;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        #logo {
+            width: 150px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin: 5px 0 0 0;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+            letter-spacing: 1px;
+        }
+
+        /* --- 4. Game Grid (Tree Shape) --- */
+        #game-board {
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+            perspective: 1000px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 5px; /* Spacing between rows */
+        }
+
+        /* --- 5. Card Styles --- */
+        .card {
+            width: var(--card-size);
+            height: var(--card-size);
+            margin: 0 5px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s, opacity 1s, border 1s;
+            cursor: pointer; /* Uses the custom cursor defined in body */
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        /* Removing card bg for the 'Tree Decoration' effect at end */
+        .card.decorated {
+            background: transparent;
+            box-shadow: none;
+            border: none;
+            pointer-events: none;
+        }
+        .card.decorated .front {
+            background: transparent;
+            border: none;
+            filter: drop-shadow(0 0 10px gold);
+        }
+        .card.decorated .back {
+            display: none;
+        }
+
+        .front, .back {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            border-radius: 10px;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .front {
+            background-color: #fff; /* White card face */
+            transform: rotateY(180deg);
+            border: 2px solid #ddd;
+        }
+
+        .front img {
+            width: 80%;
+            height: 80%;
+            object-fit: contain;
+        }
+
+        .back {
+            background: linear-gradient(135deg, #c62828 25%, #1565c0 25%, #1565c0 50%, #c62828 50%, #c62828 75%, #1565c0 75%, #1565c0 100%);
+            background-size: 20px 20px; /* Retro pattern */
+            border: 2px solid #fff;
+        }
+
+        /* --- 6. Effects: Shooting Star --- */
+        #shooting-star {
+            position: absolute;
+            top: 20%;
+            left: -100px;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(to right, rgba(255,255,255,0), #fff);
+            border-radius: 50%;
+            box-shadow: 0 0 20px #fff, 0 0 40px #FFD700;
+            z-index: 5;
+            opacity: 0;
+            transform: rotate(-10deg);
+        }
+
+        /* Animation class to trigger JS */
+        .shoot {
+            animation: shoot-across 1.5s ease-out forwards;
+        }
+
+        @keyframes shoot-across {
+            0% { left: -100px; top: 30%; opacity: 1; }
+            100% { left: 110%; top: 10%; opacity: 0; }
+        }
+
+        /* --- 7. End Game "Boom" & Text --- */
+        #boom-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: white;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 99;
+            transition: opacity 0.5s;
+        }
+
+        #victory-message {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Great Vibes', cursive;
+            font-size: 5rem;
+            color: var(--gold);
+            text-align: center;
+            opacity: 0;
+            z-index: 50;
+            pointer-events: none;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 2px 2px 4px black;
+        }
+
+        .sparkle {
+            animation: sparkleAnim 1.5s infinite alternate;
+        }
+
+        @keyframes sparkleAnim {
+            0% { text-shadow: 0 0 10px var(--gold); }
+            100% { text-shadow: 0 0 30px #fff, 0 0 10px var(--gold); }
+        }
+
+        /* --- 8. Footer (Santa) --- */
+        #footer {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 20;
+            pointer-events: none; /* Let clicks pass through if needed */
+        }
+
+        #santa-container {
+            display: flex;
+            align-items: center;
+            background: rgba(0,0,0,0.4);
+            padding: 10px 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(2px);
+        }
+
+        #santa-img {
+            width: 60px;
+            height: auto;
+            margin-right: 15px;
+            animation: bob 2s infinite ease-in-out;
+        }
+
+        #santa-text {
+            color: #fff;
+            font-size: 1.1rem;
+            max-width: 400px;
+            line-height: 1.2;
+        }
+
+        @keyframes bob {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="snow-container"></div>
+    <div id="boom-overlay"></div>
+    <div id="shooting-star"></div>
+    <div class="village-layer"></div>
+
+    <div id="header">
+        <img src="logo_NL.png" id="logo" alt="Nextlink Logo">
+        <h1>Nextlink Christmas Tree Making</h1>
+    </div>
+
+    <div id="game-board">
+        </div>
+
+    <div id="victory-message">Merry Christmas</div>
+
+    <div id="footer">
+        <div id="santa-container">
+            <img src="santa.png" id="santa-img" alt="Santa">
+            <div id="santa-text">Wishing you and yours a very Merry Christmas and a prosperous New Year!</div>
+        </div>
+    </div>
+
+    <script>
+        // --- Configuration & Assets ---
+        // 10 unique items. To get 14 pairs (28 cards), we use all 10, plus reuse the first 4.
+        const baseImages = [
+            'materials_star_NL.png',
+            'materials_hat_NL.png',
+            'materials_candy cane_NL.png',
+            'materials_snow man_NL.png',
+            'materials_sweater_NL.png',
+            'materials_socks_NL.png',
+            'materials_lights_NL.png',
+            'materials_orn_NL.png',
+            'materials_bell_NL.png',
+            'materials_gift_NL.png'
+        ];
+
+        // Create the deck of 14 pairs
+        let cardTypes = [...baseImages, ...baseImages.slice(0, 4)]; // 10 + 4 = 14 types
+        let deck = [...cardTypes, ...cardTypes]; // 14 * 2 = 28 cards total
+
+        // --- Game State ---
+        let hasFlippedCard = false;
+        let lockBoard = false;
+        let firstCard, secondCard;
+        let matchedPairs = 0;
+        const totalPairs = 14;
+
+        // --- Init ---
+        document.addEventListener('DOMContentLoaded', () => {
+            createSnow();
+            initGame();
+        });
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function initGame() {
+            const board = document.getElementById('game-board');
+            const shuffledDeck = shuffle(deck);
+            let cardIndex = 0;
+
+            // Tree Structure: 7 layers (1, 2, 3, 4, 5, 6, 7 cards)
+            for (let r = 1; r <= 7; r++) {
+                const row = document.createElement('div');
+                row.classList.add('row');
+                
+                for (let c = 0; c < r; c++) {
+                    if (cardIndex >= shuffledDeck.length) break;
+
+                    const cardImg = shuffledDeck[cardIndex];
+                    const card = createCard(cardImg);
+                    row.appendChild(card);
+                    cardIndex++;
+                }
+                board.appendChild(row);
+            }
+        }
+
+        function createCard(imageSource) {
+            const card = document.createElement('div');
+            card.classList.add('card');
+            card.dataset.name = imageSource;
+
+            const frontFace = document.createElement('div');
+            frontFace.classList.add('front');
+            const img = document.createElement('img');
+            img.src = imageSource;
+            frontFace.appendChild(img);
+
+            const backFace = document.createElement('div');
+            backFace.classList.add('back');
+            // Back could have a subtle logo or pattern, currently CSS pattern
+
+            card.appendChild(frontFace);
+            card.appendChild(backFace);
+
+            card.addEventListener('click', flipCard);
+            return card;
+        }
+
+        // --- Game Logic ---
+        function flipCard() {
+            if (lockBoard) return;
+            if (this === firstCard) return;
+
+            this.classList.add('flipped');
+
+            if (!hasFlippedCard) {
+                // First click
+                hasFlippedCard = true;
+                firstCard = this;
+                return;
+            }
+
+            // Second click
+            secondCard = this;
+            checkForMatch();
+        }
+
+        function checkForMatch() {
+            let isMatch = firstCard.dataset.name === secondCard.dataset.name;
+            isMatch ? disableCards() : unflipCards();
+        }
+
+        function disableCards() {
+            firstCard.removeEventListener('click', flipCard);
+            secondCard.removeEventListener('click', flipCard);
+
+            triggerShootingStar(); // Visual Feedback
+            matchedPairs++;
+
+            if (matchedPairs === totalPairs) {
+                setTimeout(triggerEndGame, 1000);
+            }
+
+            resetBoard();
+        }
+
+        function unflipCards() {
+            lockBoard = true;
+            setTimeout(() => {
+                firstCard.classList.remove('flipped');
+                secondCard.classList.remove('flipped');
+                resetBoard();
+            }, 1000);
+        }
+
+        function resetBoard() {
+            [hasFlippedCard, lockBoard] = [false, false];
+            [firstCard, secondCard] = [null, null];
+        }
+
+        // --- Visual Effects ---
+
+        function triggerShootingStar() {
+            const star = document.getElementById('shooting-star');
+            // Reset animation
+            star.classList.remove('shoot');
+            void star.offsetWidth; // Trigger reflow
+            star.classList.add('shoot');
+        }
+
+        function createSnow() {
+            const snowContainer = document.getElementById('snow-container');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const flake = document.createElement('div');
+                flake.classList.add('snowflake');
+                
+                // Randomize positions and speed
+                const x = Math.random() * 100;
+                const delay = Math.random() * 5;
+                const duration = 5 + Math.random() * 10;
+                const size = Math.random() * 5 + 2;
+
+                flake.style.left = `${x}vw`;
+                flake.style.animationDuration = `${duration}s`;
+                flake.style.animationDelay = `${delay}s`;
+                flake.style.width = `${size}px`;
+                flake.style.height = `${size}px`;
+
+                snowContainer.appendChild(flake);
+            }
+        }
+
+        function triggerEndGame() {
+            // 1. Graffiti Boom (Flash)
+            const boom = document.getElementById('boom-overlay');
+            boom.style.opacity = '0.8';
+            setTimeout(() => { boom.style.opacity = '0'; }, 300);
+
+            // 2. Transform Cards into Decorations
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.classList.add('decorated');
+                // Optional: Add random slight wiggle or glow to each
+            });
+
+            // 3. Show Message
+            const msg = document.getElementById('victory-message');
+            msg.style.opacity = 1;
+            msg.classList.add('sparkle');
+        }
+    </script>
+</body>
+</html>
