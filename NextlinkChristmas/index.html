@@ -41,8 +41,12 @@
             z-index: 10; 
             margin-top: 20px;
             padding: 0 10px;
+            font-size: 1.5rem;
+            text-shadow: #000 0 0 3px;
+            letter-spacing: 2px;
+            line-height: 1.6;
         }
-        .sub-text { font-family: sans-serif; font-size: 1.1rem; color: #fff; margin-top: -10px; text-shadow: 0 0 5px #000; }
+        .sub-text { font-family: sans-serif; font-size: 1.1rem; color: #fff; margin-top: -10px; text-shadow: 0 0 3px #000; }
 
         #snow-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; }
         .snowflake { position: absolute; top: -10px; background: white; border-radius: 50%; opacity: 0.9; box-shadow: 0 0 5px white; animation: fall linear infinite; }
@@ -159,7 +163,7 @@
             box-shadow: 0 0 15px var(--neon-pink); cursor: pointer; border-radius: 50px;
         }
 
-        #logo { width: 160px; }
+        #logo { width: 240px; }
 
         /* --- RWD MEDIA QUERIES --- */
         @media (max-width: 600px) {
@@ -187,7 +191,7 @@
     
     <div id="header">
         <img src="logo_NL.png" id="logo" alt="Nextlink">
-        <h1 style="margin: 5px 0;">Christmas Tree Making</h1>
+        <h1 style="margin: 5px 10px;">Christmas Tree Making</h1>
         <p class="sub-text">來配對物品，製作聖誕樹吧！</p>
     </div>
 
@@ -210,10 +214,10 @@
     </div>
 
     <script>
-        const baseImages = ['materials_star_NL.png', 'materials_hat_NL.png', 'materials_candy cane_NL.png', 'materials_snow man_NL.png', 'materials_sweater_NL.png', 'materials_socks_NL.png', 'materials_lights_NL.png', 'materials_orn_NL.png', 'materials_bell_NL.png', 'materials_gift_NL.png'];
+        const baseImages = ['materials_hat_NL.png', 'materials_candy cane_NL.png', 'materials_snow man_NL.png', 'materials_sweater_NL.png', 'materials_socks_NL.png','materials_bell_NL.png', 'materials_gift_NL.png'];
         let deck = [...baseImages, ...baseImages]; 
         let firstCard, secondCard, matchedPairs = 0;
-        let lockBoard = false; const totalPairs = 10;
+        let lockBoard = false; const totalPairs = 7;
 
         document.addEventListener('DOMContentLoaded', () => {
             createSnow(); 
@@ -225,8 +229,8 @@
             const board = document.getElementById('game-board');
             const shuffledDeck = deck.sort(() => Math.random() - 0.5);
             let cardIndex = 0;
-            // The pyramid logic: 2, 3, 4, 5, 6 total cards = 20 cards
-            [2, 3, 4, 5, 6].forEach(count => {
+            // The pyramid logic: 2, 3, 4, 5 total cards = 14 cards
+            [2, 3, 4, 5].forEach(count => {
                 const row = document.createElement('div'); row.className = 'row';
                 for (let i = 0; i < count; i++) {
                     const card = document.createElement('div'); card.className = 'card';
