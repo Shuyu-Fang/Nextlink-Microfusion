@@ -22,9 +22,9 @@
             background: url('materials_bg.png') no-repeat center bottom fixed; 
             background-size: cover;
             background-color: #020111;
-            /* Fix: Allow page to be longer than the screen if needed */
             min-height: 100vh;
             overflow-x: hidden;
+            /* 改為 auto 確保手機版可以正常捲動看聖誕老公公 */
             overflow-y: auto;
             font-family: 'Spicy Rice', cursive;
             color: white;
@@ -33,26 +33,34 @@
             align-items: center;
             cursor: url('cursor.png'), auto; 
             user-select: none;
-            transition: background-color 0.1s;
         }
 
-       #header { 
+        #header { 
             text-align: center; 
             z-index: 10; 
             margin-top: 20px;
             padding: 0 10px;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             text-shadow: #000 0 0 3px;
             letter-spacing: 2px;
-            line-height: 1.6;
+            line-height: 1.2;
         }
-        .sub-text { font-family: sans-serif; font-size: 1.1rem; color: #fff; margin-top: -10px; text-shadow: 0 0 3px #000; }
+        .sub-text { font-family: sans-serif; font-size: 1rem; color: #fff; margin-top: 5px; text-shadow: 0 0 3px #000; }
+
+        #logo { 
+            width: 200px; 
+            filter: drop-shadow(0 0 8px var(--neon-pink));
+            animation: logoGlow 3s infinite alternate;
+        }
+        @keyframes logoGlow {
+            0% { filter: drop-shadow(0 0 5px var(--neon-pink)) drop-shadow(0 0 15px var(--neon-pink)); }
+            100% { filter: drop-shadow(0 0 8px var(--neon-blue)) drop-shadow(0 0 20px var(--neon-blue)); }
+        }
 
         #snow-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; }
         .snowflake { position: absolute; top: -10px; background: white; border-radius: 50%; opacity: 0.9; box-shadow: 0 0 5px white; animation: fall linear infinite; }
         @keyframes fall { to { transform: translateY(105vh); } }
 
-        /* --- SHOOTING STAR --- */
         #shooting-star { 
             position: fixed; top: 10%; left: -500px; width: 200px; height: 4px; 
             background: linear-gradient(to right, transparent, #fff, var(--neon-blue), #fff); 
@@ -65,69 +73,62 @@
             100% { left: 120%; opacity: 0; top: 10%; } 
         }
 
-        /* --- GAME BOARD --- */
         #game-container { 
             position: relative; 
             z-index: 20; 
-            margin-top: 20px; 
-            margin-bottom: 150px; /* Space for Santa */
+            margin-top: 10px; 
+            /* 預留空間給下方的排版 */
+            margin-bottom: 20px; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
             width: 100%;
         }
         #tree-top-star {
-            width: 80px; height: 80px; filter: drop-shadow(0 0 15px gold);
-            margin-bottom: -10px; animation: starGlow 2s infinite alternate;
+            width: 60px; height: 60px; filter: drop-shadow(0 0 15px gold);
+            margin-bottom: -5px; animation: starGlow 2s infinite alternate;
         }
         @keyframes starGlow { from { transform: scale(1); filter: drop-shadow(0 0 10px gold); } to { transform: scale(1.1); filter: drop-shadow(0 0 25px yellow); } }
 
-        #game-board { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            width: 100%;
-        }
+        #game-board { display: flex; flex-direction: column; align-items: center; width: 100%; }
         .row { display: flex; justify-content: center; margin-bottom: var(--card-gap); width: 100%; }
 
         .card { 
             width: var(--card-size); 
             height: var(--card-size); 
-            margin: 0 5px; 
+            margin: 0 4px; 
             position: relative; 
             transform-style: preserve-3d; 
             transition: transform 0.4s; 
             cursor: pointer; 
-            border-radius: 10px; 
+            border-radius: 8px; 
         }
         .card.flipped { transform: rotateY(180deg); }
         .card.matched .front { border: 3px solid var(--neon-green); box-shadow: 0 0 20px var(--neon-green); }
         
-        .front, .back { width: 100%; height: 100%; position: absolute; border-radius: 10px; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; box-sizing: border-box; border: 2px solid rgba(255,255,255,0.3); }
+        .front, .back { width: 100%; height: 100%; position: absolute; border-radius: 8px; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; box-sizing: border-box; border: 2px solid rgba(255,255,255,0.3); }
         .front { background-color: rgba(255, 255, 255, 0.95); transform: rotateY(180deg); }
         .front img { width: 80%; height: 80%; object-fit: contain; }
         .back { background-image: url('pattern_MF.png'); background-size: cover; background-position: center; background-color: #004d00; }
 
-        /* --- SANTA WRAPPER --- */
+        /* --- 聖誕老公公包裝容器 --- */
         #santa-wrapper { 
-            position: fixed; bottom: 10px; left: 10px; z-index: 250; 
-            display: flex; flex-direction: column-reverse; 
-            align-items: center; pointer-events: none; 
+            position: fixed; 
+            bottom: 10px; 
+            left: 10px; 
+            z-index: 250; 
+            display: flex; 
+            flex-direction: column-reverse; 
+            align-items: center; 
+            pointer-events: none; 
         }
-        #santa-img { 
-            width: 130px; animation: santaSway 3s ease-in-out infinite; 
-            transform-origin: bottom center; pointer-events: auto;
-        }
-        @keyframes santaSway {
-            0%, 100% { transform: rotate(-5deg); }
-            50% { transform: rotate(5deg); }
-        }
+        #santa-img { width: 110px; animation: santaSway 3s ease-in-out infinite; transform-origin: bottom center; pointer-events: auto;}
+        @keyframes santaSway { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
         #speech-bubble {
             background: white; border: 3px solid var(--neon-pink); border-radius: 15px;
             padding: 8px 12px; color: #333; font-family: sans-serif; font-weight: bold;
-            max-width: 160px; margin-bottom: 10px; position: relative; 
-            box-shadow: 0 0 10px var(--neon-pink); font-size: 0.75rem; text-align: center;
-            pointer-events: auto;
+            max-width: 150px; margin-bottom: 10px; position: relative; 
+            box-shadow: 0 0 10px var(--neon-pink); font-size: 0.7rem; text-align: center;
         }
         #speech-bubble::after {
             content: ''; position: absolute; bottom: -12px; left: 50%;
@@ -138,49 +139,74 @@
         /* --- ENDING SEQUENCE --- */
         #ending-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; z-index: 300; 
+            background: rgba(0,0,0,0.9); display: flex; flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            z-index: 300; 
             opacity: 0; pointer-events: none; transition: opacity 0.8s;
+            padding: 30px 0; box-sizing: border-box;
         }
         
+        .ending-logo {
+            width: 280px; 
+            max-width: 80vw; 
+            filter: drop-shadow(0 0 10px var(--neon-pink));
+            animation: logoGlow 3s infinite alternate;
+            margin-bottom: 20px;
+        }
+
         #final-tree-img {
-            max-height: 70vh; /* RWD friendly height */
-            height: 600px; 
+            max-height: 48vh; 
             width: auto; transform: scale(0); opacity: 0;
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.5);
-            filter: drop-shadow(0 0 50px gold); z-index: 302;
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.27);
+            filter: drop-shadow(0 0 30px gold); z-index: 302;
         }
         #final-tree-img.tadah { transform: scale(1); opacity: 1; }
 
         #fireworks-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 301; pointer-events: none; }
 
-        #final-controls { position: relative; z-index: 310; margin-top: 15px; opacity: 0; transition: opacity 0.5s 1s; }
+        #final-controls { 
+            position: relative; 
+            z-index: 310; 
+            opacity: 0; 
+            transition: opacity 0.3s 0s;
+            margin-top: 20px;
+        }
         #final-controls.show { opacity: 1; pointer-events: auto; }
         
         #play-again-btn {
-            padding: 12px 35px; font-family: 'Spicy Rice', cursive; font-size: 1.4rem;
+            padding: 10px 30px; font-family: 'Spicy Rice', cursive; font-size: 1.2rem;
             color: white; background: #e60000; border: 3px solid white;
             box-shadow: 0 0 15px var(--neon-pink); cursor: pointer; border-radius: 50px;
         }
 
-        #logo { width: 240px; }
-
-        /* --- RWD MEDIA QUERIES --- */
+        /* --- RWD 修正 --- */
         @media (max-width: 600px) {
             :root {
-                --card-size: 14vw; /* Scale cards based on mobile screen width */
-                --card-gap: 2vw;
+                --card-size: 18vw; 
+                --card-gap: 2vw; /* 縮小一點間距 */
             }
-            #header h1 { font-size: 2rem; }
-            .sub-text { font-size: 1rem; }
-            #final-tree-img { height: 400px; }
-            #santa-img { width: 90px; }
-            #speech-bubble { max-width: 130px; font-size: 0.65rem; }
-        }
+            #logo { width: 140px; } /* 縮小 Logo 釋放空間 */
+            #header { margin-top: 10px; }
+            #header h1 { font-size: 1.3rem; }
+            #final-tree-img { max-height: 42vh; }
+            .ending-logo { width: 200px; }
 
-        @media (max-height: 700px) {
-            #game-container { margin-top: 5px; }
-            #tree-top-star { width: 50px; height: 50px; }
+            /* 核心修正：將老公公從 fixed 改為 relative 排在卡牌下面 */
+            #santa-wrapper { 
+                position: relative; /* 不再擋在畫面前面 */
+                bottom: 0; 
+                left: 0; 
+                margin: 20px 0; /* 與上方卡牌保持距離 */
+                flex-direction: column-reverse; /* 保持對話框在上面 */
+                pointer-events: auto;
+            }
+            #speech-bubble {
+                max-width: 80vw;
+            }
+            #game-container {
+                margin-bottom: 0; /* 讓老公公接在後面 */
+            }
         }
     </style>
 </head>
@@ -190,9 +216,9 @@
     <div id="shooting-star"></div>
     
     <div id="header">
-        <img src="logo_MF.png" id="logo" alt="Microfusion">
+        <img src="logo_MF.png" id="logo" alt="Logo">
         <h1 style="margin: 5px 0;">Christmas Tree Making</h1>
-        <p class="sub-text">來配對物品，製作聖誕樹吧！</p>
+        <p class="sub-text">✨翻牌配對蒐集裝飾，完成聖誕樹，把歡樂與好運分享出去。</p>
     </div>
 
     <div id="game-container">
@@ -206,6 +232,9 @@
     </div>
 
     <div id="ending-overlay">
+        <div style="text-align: center; z-index: 310;">
+            <img src="logo_MF.png" class="ending-logo" alt="Logo">
+        </div>
         <canvas id="fireworks-canvas"></canvas>
         <img id="final-tree-img" src="tree_MF.png" alt="Decorated Christmas Tree">
         <div id="final-controls">
@@ -214,7 +243,8 @@
     </div>
 
     <script>
-       const baseImages = ['materials_hat_MF.png', 'materials_candy cane_MF.png', 'materials_snow man_MF.png', 'materials_sweater_MF.png', 'materials_socks_MF.png','materials_bell_MF.png', 'materials_gift_MF.png'];
+        /* 邏輯部分保持不變 */
+        const baseImages = ['materials_hat_MF.png', 'materials_candy cane_MF.png', 'materials_snow man_MF.png', 'materials_sweater_MF.png', 'materials_socks_MF.png','materials_bell_MF.png', 'materials_gift_MF.png'];
         let deck = [...baseImages, ...baseImages]; 
         let firstCard, secondCard, matchedPairs = 0;
         let lockBoard = false; const totalPairs = 7;
@@ -229,7 +259,6 @@
             const board = document.getElementById('game-board');
             const shuffledDeck = deck.sort(() => Math.random() - 0.5);
             let cardIndex = 0;
-            // The pyramid logic: 2, 3, 4, 5 total cards = 14 cards
             [2, 3, 4, 5].forEach(count => {
                 const row = document.createElement('div'); row.className = 'row';
                 for (let i = 0; i < count; i++) {
@@ -277,54 +306,67 @@
             const overlay = document.getElementById('ending-overlay');
             const finalTree = document.getElementById('final-tree-img');
             const finalControls = document.getElementById('final-controls');
-            
             overlay.style.opacity = '1'; overlay.style.pointerEvents = 'auto';
-            document.body.style.backgroundColor = '#fff'; 
-            setTimeout(() => document.body.style.backgroundColor = '#020111', 100);
-
-            launchFirecrackerDisplay();
+            launchFirecrackerDisplay(); 
             setTimeout(() => finalTree.classList.add('tadah'), 300);
-            setTimeout(() => finalControls.classList.add('show'), 1500);
+            setTimeout(() => finalControls.classList.add('show'), 400);
         }
 
         function launchFirecrackerDisplay() {
             const canvas = document.getElementById('fireworks-canvas');
             const ctx = canvas.getContext('2d');
             canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            
             let particles = [];
-            const colors = ['#ff00ff', '#00ffff', '#39ff14', '#ffff00', '#ff0000', '#ffffff'];
+            const colors = ['#ff00ff', '#00ffff', '#39ff14', '#ffff00', '#ff0000', '#ffffff', '#FFD700'];
 
-            function createBurst(x, y, power = 20, count = 100) {
+            function createBurst(x, y, count = 40) {
                 for (let i = 0; i < count; i++) { 
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = Math.random() * 12 + 2;
                     particles.push({
-                        x, y, vx: (Math.random() - 0.5) * power, vy: (Math.random() - 0.5) * power,
+                        x, y, 
+                        vx: Math.cos(angle) * speed, 
+                        vy: Math.sin(angle) * speed - 2,
                         color: colors[Math.floor(Math.random() * colors.length)],
-                        alpha: 1, gravity: 0.2, size: Math.random() * 5 + 2
+                        alpha: 1, 
+                        gravity: 0.2, 
+                        size: Math.random() * 8 + 4,
+                        rotation: Math.random() * 360,
+                        rotateSpeed: (Math.random() - 0.5) * 10,
+                        shape: Math.random() > 0.4 ? 'rect' : 'circle' 
                     });
                 }
             }
 
-            createBurst(canvas.width/2, canvas.height/2, 45, 250);
+            createBurst(canvas.width / 2, canvas.height / 2, 100);
+            const interval = setInterval(() => {
+                createBurst(Math.random() * canvas.width, Math.random() * canvas.height * 0.7, 20);
+            }, 400);
+            setTimeout(() => clearInterval(interval), 5000);
 
             function animate() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 particles.forEach((p, i) => {
-                    p.vy += p.gravity; p.x += p.vx; p.y += p.vy; p.alpha -= 0.015;
-                    ctx.globalAlpha = p.alpha; ctx.fillStyle = p.color;
-                    ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
-                    if (Math.random() > 0.9) { 
-                        ctx.fillStyle = "#fff"; ctx.fillRect(p.x, p.y, 4, 4);
+                    p.vy += p.gravity; p.x += p.vx; p.y += p.vy; p.alpha -= 0.01;
+                    p.rotation += p.rotateSpeed;
+                    ctx.globalAlpha = p.alpha;
+                    ctx.fillStyle = p.color;
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.rotation * Math.PI / 180);
+                    if (p.shape === 'rect') {
+                        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size / 2);
+                    } else {
+                        ctx.beginPath();
+                        ctx.arc(0, 0, p.size / 3, 0, Math.PI * 2);
+                        ctx.fill();
                     }
+                    ctx.restore();
                     if (p.alpha <= 0) particles.splice(i, 1);
                 });
                 if (particles.length > 0) requestAnimationFrame(animate);
             }
             animate();
-
-            for(let i=0; i<10; i++) {
-                setTimeout(() => createBurst(Math.random()*canvas.width, Math.random()*canvas.height, 18, 40), i * 180);
-            }
         }
     </script>
 </body>
